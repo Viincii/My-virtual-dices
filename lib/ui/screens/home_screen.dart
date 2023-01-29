@@ -27,17 +27,20 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                DiceTile(diceNumber: snapshot.data!, numberOfFaces: numberOfFaces)
+                DiceTile(diceNumber: snapshot.data!,
+                    numberOfFaces: numberOfFaces,
+                    blocDice: blocDice),
               ],
             ),
           );
         }
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          blocDice.rollDice();
+        isExtended: true,
+        onPressed: () async {
+          await blocDice.animateRollDice();
         },
-        child: const Icon(Icons.change_circle_outlined),
+        child: const Text('All'),
         backgroundColor: Colors.blueGrey,
       ),
     );
