@@ -1,4 +1,4 @@
-# my_virtual_dices
+# My virtual dices
 
 A little projet to roll virtual dices
 
