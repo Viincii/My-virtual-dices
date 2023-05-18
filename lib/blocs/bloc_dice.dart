@@ -29,7 +29,6 @@ class BlocDice extends Bloc {
     }
     rollDice();
   }
-
   static rollAllDices(List<BlocDice> blocDices) async{
     for (BlocDice blocDice in blocDices) {
       blocDice.animateRollDice();

@@ -3,15 +3,15 @@ import 'package:dice_icons/dice_icons.dart';
 import 'package:my_virtual_dices/blocs/bloc_dice.dart';
 
 class DiceTile extends StatelessWidget {
-  final int diceNumber;
   final int numberOfFaces;
   final BlocDice blocDice;
 
-  const DiceTile({Key? key, required this.diceNumber, required this.numberOfFaces, required this.blocDice})
+  const DiceTile({Key? key, required this.numberOfFaces, required this.blocDice})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    double size = 80;
     const dices = [
       DiceIcons.dice0,
       DiceIcons.dice1,
@@ -21,25 +21,33 @@ class DiceTile extends StatelessWidget {
       DiceIcons.dice5,
       DiceIcons.dice6,
     ];
-    return InkWell(
-      onTap: () async {
-        await blocDice.animateRollDice();
-      },
-      child: Container(
-        width: 100,
-        height: 100,
-        decoration: const BoxDecoration(
-          color: Colors.black45,
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-        ),
-        child: Center(
-          child: Icon(
-            dices[diceNumber],
-            size: 80,
-            color: Colors.white,
+    return StreamBuilder<int>(
+      stream: blocDice.stream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData){
+          return Container();
+        }
+        return InkWell(
+          onTap: () async {
+            await blocDice.animateRollDice();
+          },
+          child: Container(
+            width: size,
+            height: size,
+            decoration: const BoxDecoration(
+              color: Colors.black45,
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            child: Center(
+              child: Icon(
+                dices[snapshot.data!],
+                size: size - (size/10),
+                color: Colors.white,
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      }
     );
   }
 }
