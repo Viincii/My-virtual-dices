@@ -19,6 +19,7 @@ class BlocDice extends Bloc {
   rollDice() async{
     int diceNumber = 1 +  Random().nextInt(numberOfFaces!);
     sink.add(diceNumber);
+    return diceNumber;
   }
 
   animateRollDice() async{
@@ -27,12 +28,15 @@ class BlocDice extends Bloc {
       sink.add(diceNumber);
       await Future.delayed(const Duration(milliseconds: 80));
     }
-    rollDice();
+    return await rollDice();
   }
   static rollAllDices(List<BlocDice> blocDices) async{
+    List<int> listResults = [];
     for (BlocDice blocDice in blocDices) {
-      blocDice.animateRollDice();
+      var res = await  blocDice.animateRollDice();
+      listResults.add(res);
     }
+    return listResults;
   }
 
   @override
