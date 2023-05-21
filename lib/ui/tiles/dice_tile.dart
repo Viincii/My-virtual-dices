@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:dice_icons/dice_icons.dart';
 import 'package:my_virtual_dices/blocs/bloc_dice.dart';
+import 'package:my_virtual_dices/ui/tiles/dice_display_tile.dart';
 
 class DiceTile extends StatelessWidget {
   final int numberOfFaces;
@@ -12,15 +12,6 @@ class DiceTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double size = 80;
-    const dices = [
-      DiceIcons.dice0,
-      DiceIcons.dice1,
-      DiceIcons.dice2,
-      DiceIcons.dice3,
-      DiceIcons.dice4,
-      DiceIcons.dice5,
-      DiceIcons.dice6,
-    ];
     return StreamBuilder<int>(
       stream: blocDice.stream,
       builder: (context, snapshot) {
@@ -31,20 +22,9 @@ class DiceTile extends StatelessWidget {
           onTap: () async {
             await blocDice.animateRollDice();
           },
-          child: Container(
-            width: size,
-            height: size,
-            decoration: const BoxDecoration(
-              color: Colors.black45,
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            child: Center(
-              child: Icon(
-                dices[snapshot.data!],
-                size: size - (size/10),
-                color: Colors.white,
-              ),
-            ),
+          child: DiceDisplayTile(
+            size: size,
+            diceValue: snapshot.data!,
           ),
         );
       }

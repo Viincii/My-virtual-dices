@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_virtual_dices/blocs/bloc_dice.dart';
 import 'package:my_virtual_dices/blocs/bloc_int.dart';
+import 'package:my_virtual_dices/blocs/bloc_list_int.dart';
 import 'package:my_virtual_dices/ui/tiles/dice_tile.dart';
+import 'package:my_virtual_dices/ui/tiles/results_tile.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -12,7 +14,7 @@ class HomeScreen extends StatelessWidget {
     BlocInt blocNumberOfDices = BlocInt(1);
     List<BlocDice> listBlocs = [];
 
-    List<int> listResults = [];
+    BlocListInt blocListInt = BlocListInt();
 
     return Scaffold(
       appBar: AppBar(
@@ -27,7 +29,8 @@ class HomeScreen extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             }
-            for (var i = 0; i < snapshot.data!; i++){
+            listBlocs = [];
+            for (var i = 0; i < snapshot.data! ; i++){
               listBlocs.add(BlocDice(numberOfFaces: numberOfFaces));
             }
             return Column(
@@ -51,15 +54,25 @@ class HomeScreen extends StatelessWidget {
                           blocNumberOfDices.changeValue(int.parse(value))
                         }
                       },
+                      onChanged: (value) => {blocListInt.resetValues()},
                     ),
                   )
                 ],
               ),
-              //Text('Results: $listResults'),
+              StreamBuilder<List<int>>(
+                stream: blocListInt.stream,
+                builder: (context, snapshot) {
+                  if(snapshot.hasData && snapshot.data!.isNotEmpty){
+                    return ResultsTile(listResults: snapshot.data!);
+                  }
+                  return Container();
+                }
+              ),
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   child: GridView.builder(
+                    primary: true,
                     itemCount: snapshot.data,
                     itemBuilder: (BuildContext ctx, index){
                       return Center(child: DiceTile(
@@ -79,7 +92,9 @@ class HomeScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         isExtended: true,
         onPressed: () async {
-          listResults = await BlocDice.rollAllDices(listBlocs);
+          blocListInt.resetValues();
+          List<int> listResults = await BlocDice.rollAllDices(listBlocs);
+          blocListInt.changeValue(listResults);
         },
         child: const Text('Roll'),
         backgroundColor: Colors.blueGrey,
